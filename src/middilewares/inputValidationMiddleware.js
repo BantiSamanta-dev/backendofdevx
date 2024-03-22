@@ -9,7 +9,7 @@ const validateRegistration = (req, res, next) => {
         password: Joi.string().min(6).required(),
         fullName: Joi.string().required(),
         bio: Joi.string(),
-        isAdmin: Joi.boolean().default(false),
+       roles: Joi.string()
     });
 
     const { error } = schema.validate(req.body);

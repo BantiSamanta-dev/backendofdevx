@@ -5,14 +5,16 @@ import { validationResult } from 'express-validator';
 import{secretKey} from '../config.js'
 
 export const registerUser = async (req, res) => {
+  
+
   try {
       const errors = validationResult(req);
       if (!errors.isEmpty()) {
           return res.status(400).json({ errors: errors.array() });
       }
 
-    const body =  { username, email, password, fullName, bio } = req.body;
-      console.log(body)
+    const { username, email, password, fullName, bio , roles} = req.body;
+     
 
       // if (typeof isAdmin !== 'boolean') {
       //   return res.status(400).json({ error: 'isAdmin must be a boolean value' });
@@ -32,7 +34,7 @@ export const registerUser = async (req, res) => {
           username,
           email,
           passwordHash,
-          roles: isAdmin ? ['admin'] : ['user'],
+          roles,
           fullName,
           bio,
       });
@@ -121,6 +123,9 @@ export const deleteUser = async (req, res) => {
     res.status(500).json({ error: 'Internal Server Error' });
   }
 };
+
+// get all users 
+
 export const getUserById = async (req, res) => {
     try {
       const userId = req.params.id; 
