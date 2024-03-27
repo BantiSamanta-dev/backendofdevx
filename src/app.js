@@ -33,8 +33,8 @@ app.post('/register', validateRegistration, registerUser);
 app.post('/login', validateLogin, loginUser);
 app.put('/users/:id', updateUser);
 app.delete('/users/:id', deleteUser);
-app.post('/logout', logoutUser); // Assuming you have a logoutUser controller
-app.get('/users/:userid',  verifyToken, getUserById); // Assuming you have an authentication middleware
+app.post('/logout', logoutUser); 
+app.get('/users/:id',  verifyToken, getUserById); 
 app.put('/users/:id/change-password',  verifyToken, changePassword); 
 
 

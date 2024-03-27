@@ -13,17 +13,21 @@ export const registerUser = async (req, res) => {
           return res.status(400).json({ errors: errors.array() });
       }
 
+      // const { username, email, password, fullName, bio, isAdmin } = req.body;
+
     const { username, email, password, fullName, bio , roles} = req.body;
+
+    console.log(req.body.roles)
      
 
-      // if (typeof isAdmin !== 'boolean') {
-      //   return res.status(400).json({ error: 'isAdmin must be a boolean value' });
+      // if (typeof roles !== 'boolean') {
+      //   return res.status(400).json({ error: 'roles must be a boolean value' });
       // }
 
-      // // Check if the requester is an admin
-      // if (isAdmin && req.user.roles.includes('admin')) {
-      //     return res.status(403).json({ error: 'Admin users cannot create other admin users' });
-      // }
+      // Check if the requester is an admin
+      if (roles && req.body.roles.includes('admin')) {
+          return res.status(403).json({ error: 'Admin users cannot create other admin users' });
+      }
 
       // Hash the password
       const salt = await bcrypt.genSalt(10);
@@ -35,6 +39,7 @@ export const registerUser = async (req, res) => {
           email,
           passwordHash,
           roles,
+          // roles: isAdmin ? ['admin'] : ['user'], 
           fullName,
           bio,
       });
@@ -80,7 +85,8 @@ export const loginUser = async (req, res) => {
 
 export const updateUser = async (req, res) => {
   try {
-    const { username, email, fullName, bio } = req.body;
+    const { username, email, fullName, bio, roles } = req.body; // Include roles in the destructuring
+
     const userId = req.params.id; 
     
     const user = await User.findById(userId);
@@ -88,12 +94,16 @@ export const updateUser = async (req, res) => {
       return res.status(404).json({ error: 'User not found' });
     }
 
-
+    // Update user fields
     user.username = username;
     user.email = email;
     user.fullName = fullName;
     user.bio = bio;
-   
+    
+    // Check if roles is provided in the request body
+    if (roles) {
+      user.roles = roles; // Update roles only if it's provided in the request
+    }
 
     await user.save();
 
@@ -103,6 +113,7 @@ export const updateUser = async (req, res) => {
     res.status(500).json({ error: 'Internal Server Error' });
   }
 };
+
 
 
 export const deleteUser = async (req, res) => {
@@ -131,6 +142,7 @@ export const getUserById = async (req, res) => {
       const userId = req.params.id; 
   
       const user = await User.findById(userId);
+      console.log(user)
       if (!user) {
         return res.status(404).json({ error: 'User not found' });
       }
@@ -144,7 +156,7 @@ export const getUserById = async (req, res) => {
   
   export const logoutUser = async (req, res) => {
     try {
-      // You can add your logout logic here
+      
   
       res.status(200).json({ message: 'Logout successful' });
     } catch (error) {
@@ -157,6 +169,8 @@ export const getUserById = async (req, res) => {
     try {
       const userId = req.params.id; 
       const { oldPassword, newPassword } = req.body;
+      
+      console.log(req.body.user)
   
       const user = await User.findById(userId);
       if (!user) {

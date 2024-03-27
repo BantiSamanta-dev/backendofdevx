@@ -1,4 +1,3 @@
-
 import mongoose from 'mongoose';
 
 const Schema = mongoose.Schema;
@@ -8,7 +7,7 @@ const userSchema = new Schema({
     username: { type: String, unique: true, required: true },
     email: { type: String, unique: true, required: true },
     passwordHash: { type: String, required: true },
-    roles: { type: [String], required: true},
+    roles: { type: String, enum: ['user', 'admin'], required: true },
     fullName: { type: String, required: true },
     bio: { type: String },
 });

@@ -1,16 +1,13 @@
 
 import Challenge from "../models/challenge.m.js"
 
-
-
-
-
 export const createChallenge = async(req,res)=>{
+  
     try {
        
         const {title , description , difficulty ,category , points ,metadata} = req.body
         const adminId = req.user.userId;
-        console.log('User ID:', adminId);
+        
 
         const newChallenge = new Challenge({
             title,
